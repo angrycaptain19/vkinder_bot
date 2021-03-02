@@ -40,12 +40,12 @@ class VKinderDb:
         rebuild_key = 'rebuild_tables'
         rebuild_default_value = False
         options_default = {rebuild_key: rebuild_default_value}
-        result = dict()
+        result = {}
         try:
             with open(filename, encoding='utf-8', mode='r+') as file:
                 options = json.load(file)
                 rebuild_value = options.get(rebuild_key, False)
-                if not rebuild_value == rebuild_default_value:
+                if rebuild_value != rebuild_default_value:
                     result.update({rebuild_key: rebuild_value})
                 else:
                     result.update({rebuild_key: rebuild_default_value})
@@ -84,7 +84,7 @@ class VKinderDb:
         if not client_db.id or force_country_update:
             client_db.country_id = client.country_id
             client_db.country_name = client.country_name
-        elif client_db.id:
+        else:
             client.country_id = client_db.country_id
             client.country_name = client_db.country_name
         client_db.city_id = client.city_id
@@ -108,9 +108,12 @@ class VKinderDb:
         Loads all search history parameters
         """
         log(f'[{client.fname} {client.lname}] Loading all client\'s searches from DB', is_debug_msg=self.debug_mode)
-        result = self.__session.query(Searches).filter(Searches.client_id == client.db_id).order_by(
-            Searches.updated.desc()).all()
-        return result
+        return (
+            self.__session.query(Searches)
+            .filter(Searches.client_id == client.db_id)
+            .order_by(Searches.updated.desc())
+            .all()
+        )
 
     # @decorator_speed_meter(True)
     def save_search(self, client: VKinderClient):

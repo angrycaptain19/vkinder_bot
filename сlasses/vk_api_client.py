@@ -28,7 +28,7 @@ class VkApiClient:
 
     def __init__(self, token: str, app_id: str, user_id=None, version: str = '5.124', debug_mode=False, base_url=None):
         super().__init__()
-        self.API_BASE_URL = base_url if base_url else BASE_URL
+        self.API_BASE_URL = base_url or BASE_URL
         self.debug_mode = debug_mode
         self.__vksite = 'https://vk.com/'
         self.token = token
@@ -367,7 +367,7 @@ class VkApiClient:
         if not self.__initialized:
             log(f'Error in get_user_photos: {type(self).__name__} not initialized', self.debug_mode)
             return result
-        owner_id = owner_id if owner_id else self.__user_id
+        owner_id = owner_id or self.__user_id
         offset = 0
         count = 1000
         log(f'Getting user {owner_id} photos from {album_id}...', self.debug_mode)
@@ -545,7 +545,7 @@ def download_file(self, url: str, folder: str = 'photos', filename: str = None):
         # if os.path.isfile('filename.txt')
         # if not filename:
         #     self.extract_filetype(url)
-        filename = filename if filename else 'image.jpg'
+        filename = filename or 'image.jpg'
         open(f'{folder}/{filename}', 'wb').write(response.raw_content)
         return True
     return False

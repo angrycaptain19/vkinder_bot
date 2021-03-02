@@ -49,7 +49,7 @@ class TestVKinderDb(unittest.TestCase):
             self.db.save_client(client_1)
             self.db.save_client(client_2)
 
-            for i in range(self.db.search_history_limit + 1):
+            for _ in range(self.db.search_history_limit + 1):
                 client_1.reset_search()
                 client_2.reset_search()
 
