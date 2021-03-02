@@ -529,11 +529,19 @@ class VKinderBot:
         client.rating_filter = RATINGS['new']
         searches = self.db.load_searches(client)
         client.searches = searches
-        history = []
-        for index, searches in enumerate(searches, 1):
-            history.append(str(index) + '. ' + PHRASES['x_x_x_from_x_to_x'].format(
-                searches.city_name, SEXES[searches.sex_id], LOVE_STATUSES[searches.status_id], searches.min_age,
-                searches.max_age))
+        history = [
+            str(index)
+            + '. '
+            + PHRASES['x_x_x_from_x_to_x'].format(
+                searches.city_name,
+                SEXES[searches.sex_id],
+                LOVE_STATUSES[searches.status_id],
+                searches.min_age,
+                searches.max_age,
+            )
+            for index, searches in enumerate(searches, 1)
+        ]
+
         if history:
             keyboard = self.cmd.kb(['back', 'quit'])
             self.send_msg(client, '\n'.join(history), keyboard=keyboard)
@@ -577,10 +585,9 @@ class VKinderBot:
     def do_say_goodbye(self, client: VKinderClient):
         if len(client.searches) == 0:
             keyboard = self.cmd.kb(['yes', 'no'])
-            self.send_msg(client, PHRASES['goodbye_x'].format(client.fname), keyboard=keyboard)
         else:
             keyboard = self.cmd.kb(['new search', 'show history', None, 'liked', 'disliked', 'banned', None, 'quit'])
-            self.send_msg(client, PHRASES['goodbye_x'].format(client.fname), keyboard=keyboard)
+        self.send_msg(client, PHRASES['goodbye_x'].format(client.fname), keyboard=keyboard)
         self.clients_pool.pop(client.vk_id)
 
 
